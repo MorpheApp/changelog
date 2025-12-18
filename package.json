@@ -1,7 +1,7 @@
 {
-  "name": "@semantic-release/changelog",
+  "name": "@MorpheApp/changelog",
   "description": "semantic-release plugin to create or update a changelog file",
-  "version": "0.0.0-development",
+  "version": "0.0.1",
   "author": "Pierre Vanduynslager (https://github.com/pvdlg)",
   "ava": {
     "files": [
@@ -68,11 +68,11 @@
   },
   "publishConfig": {
     "access": "public",
-    "provenance": true
+    "registry": "https://npm.pkg.github.com/"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/semantic-release/changelog.git"
+    "url": "https://github.com/MorpheApp/changelog.git"
   },
   "scripts": {
     "lint": "xo",
