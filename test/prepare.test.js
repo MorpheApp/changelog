@@ -90,3 +90,22 @@ test.serial('Create new changelog with title if specified', async (t) => {
 
   t.is((await readFile(changelogPath)).toString(), `${changelogTitle}\n\n${notes}\n`);
 });
+
+test('Publish the public key in the release JSON if the key file exists', async (t) => {
+  const cwd = tempy.directory();
+  const context = {
+    cwd,
+    nextRelease: {notes: 'Test release note', version: '1.0.0'},
+    logger: t.context.logger,
+    options: {repositoryUrl: 'https://github.com/owner/repo.git'},
+  };
+  const releaseJson = {path: 'patches-bundle.json', publicKeyPath: 'morphe-signing.pub'};
+  const readReleaseJson = async () => JSON.parse(await readFile(path.resolve(cwd, 'patches-bundle.json')));
+
+  await prepare({releaseJson}, context);
+  t.false('public_key' in (await readReleaseJson()));
+
+  await outputFile(path.resolve(cwd, 'morphe-signing.pub'), 'A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=\n');
+  await prepare({releaseJson}, context);
+  t.is((await readReleaseJson()).public_key, 'A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=');
+});

@@ -79,6 +79,7 @@ With this configuration:
 | `releaseJson.path`                 | Output path for `release.json`.                                                        | `release.json`      |
 | `releaseJson.downloadUrlTemplate`  | Template for the primary download URL. Supports `${version}`, `${owner}`, `${repo}`.   | GitHub releases URL |
 | `releaseJson.signatureUrlTemplate` | Template for the signature download URL. Supports `${version}`, `${owner}`, `${repo}`. | GitHub releases URL |
+| `releaseJson.publicKeyPath`        | File with the public signing key, published as `public_key` if the file exists.        | -                   |
 
 #### Template variables
 
