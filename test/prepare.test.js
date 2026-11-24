@@ -115,3 +115,36 @@ test('Publish the public key in the release JSON if the key file exists', async 
   const signed = await readReleaseJson();
   t.is(signed.public_key, 'A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=');
 });
+
+const releaseUrls = test.macro({
+  async exec(t, repositoryUrl, expected, templates = {}) {
+    const cwd = tempDirectory();
+    await prepare(
+      {releaseJson: templates},
+      {cwd, nextRelease: {notes: 'Notes', version: '1.0.0'}, logger: t.context.logger, options: {repositoryUrl}}
+    );
+    const data = JSON.parse(await readFile(path.resolve(cwd, 'release.json'), 'utf8'));
+    t.is(data.download_url, expected);
+    t.is(data.signature_download_url, `${expected}.asc`);
+  },
+  title: (provided) => `Release URLs: ${provided}`,
+});
+
+const asset = 'app-release-1.0.0.apk';
+test('GitHub', releaseUrls, 'git@github.com:o/r.git', `https://github.com/o/r/releases/download/v1.0.0/${asset}`);
+test(
+  'Codeberg without credentials',
+  releaseUrls,
+  'https://user:token@codeberg.org/o/r.git',
+  `https://codeberg.org/o/r/releases/download/v1.0.0/${asset}`
+);
+test(
+  'GitLab subgroup',
+  releaseUrls,
+  'https://gitlab.com/o/sub/r.git',
+  `https://gitlab.com/o/sub/r/-/releases/v1.0.0/downloads/${asset}`
+);
+test('Custom template', releaseUrls, 'https://codeberg.org/o/r.git', 'https://codeberg.org/o/r/1.0.0', {
+  downloadUrlTemplate: 'https://${host}/${owner}/${repo}/${version}',
+  signatureUrlTemplate: 'https://${host}/${owner}/${repo}/${version}.asc',
+});

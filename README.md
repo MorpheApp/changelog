@@ -77,8 +77,8 @@ With this configuration:
 | ---------------------------------- | -------------------------------------------------------------------------------------- | ------------------- |
 | `releaseJson.enabled`              | Enable or disable `release.json` generation.                                           | `true`              |
 | `releaseJson.path`                 | Output path for `release.json`.                                                        | `release.json`      |
-| `releaseJson.downloadUrlTemplate`  | Template for the primary download URL. Supports `${version}`, `${owner}`, `${repo}`.   | GitHub releases URL |
-| `releaseJson.signatureUrlTemplate` | Template for the signature download URL. Supports `${version}`, `${owner}`, `${repo}`. | GitHub releases URL |
+| `releaseJson.downloadUrlTemplate`  | Template for the primary download URL. Supports `${version}`, `${host}`, `${owner}`, `${repo}`.   | Releases URL of the repository host |
+| `releaseJson.signatureUrlTemplate` | Template for the signature download URL. Supports `${version}`, `${host}`, `${owner}`, `${repo}`. | Releases URL of the repository host |
 | `releaseJson.publicKeyPath`        | File with the public signing key, published as `public_key` if the file exists.        | -                   |
 
 #### Template variables
@@ -88,8 +88,13 @@ The following variables are available in URL templates:
 | Variable     | Description                                  |
 | ------------ | -------------------------------------------- |
 | `${version}` | The released version (`nextRelease.version`) |
-| `${owner}`   | GitHub repository owner                      |
-| `${repo}`    | GitHub repository name                       |
+| `${host}`    | Repository host, such as `codeberg.org`      |
+| `${owner}`   | Repository owner, including GitLab subgroups |
+| `${repo}`    | Repository name                              |
+
+The host, owner and name are taken from the repository URL, so GitHub, GitLab, Codeberg and other Gitea or Forgejo hosts are supported.
+
+The default templates use the GitHub style release URL, which Gitea and Forgejo share, or the GitLab style if the host name has `gitlab` in it (such as `gitlab.com` or `gitlab.example.com`). On GitLab, the release asset must have its `filepath` set to the file name. For hosts with other URLs, set `downloadUrlTemplate` and `signatureUrlTemplate`.
 
 ### Examples
 
